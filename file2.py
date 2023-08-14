@@ -1,4 +1,4 @@
-from torch import cuda
+from torch import cuda, bfloat16
 import transformers
 from transformers import StoppingCriteria, StoppingCriteriaList
 import torch
@@ -17,11 +17,18 @@ model_config = transformers.AutoConfig.from_pretrained(
     use_auth_token=hf_auth
 )
 
+bnb_config = transformers.BitsAndBytesConfig(load_in_4bit = True,
+bnb_4bit_quant_tyoe = 'nf4',
+bnb_4bit_use_double_quant=True,
+bnb_4bit_compute_dtype=bfloat16
+)
+
+
 model = transformers.AutoModelForCausalLM.from_pretrained(
     model_id,
     trust_remote_code=True,
     config=model_config,
-    # quantization_config=bnb_config,
+    quantization_config=bnb_config,
     device_map='auto',
     use_auth_token=hf_auth,
     offload_folder="save_folder"
@@ -30,12 +37,15 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 
 # Load model directly
 from transformers import AutoTokenizer, AutoModelForCausalLM
+tokenizer = transformers.AutoTokenizer.from_pretrained(model_id, use_auth_token=hf_auth)
 
-tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf",use_auth_token=hf_auth)
 
 stop_list = ['\nHuman:', '\n```\n']
 
 stop_token_ids = [tokenizer(x)['input_ids'] for x in stop_list]
+
+import torch
+stop_token_ids = [torch.LongTensor(x).to(device) for x in stop_token_ids]
 
 
 
@@ -57,6 +67,9 @@ generate_text = transformers.pipeline(
     max_new_tokens=512,  
     repetition_penalty=1.1 
 )
+
+print("===============================================")
+
 
 res = generate_text("Explain to me the difference between nuclear fission and fusion.")
 print(res[0]["generated_text"])
