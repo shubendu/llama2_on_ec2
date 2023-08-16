@@ -10,7 +10,7 @@ print("Printing Device...")
 print(device)
 
 print("loading model....")
-model_id ="meta-llama/Llama-2-7b-chat-hf"
+model_id ="meta-llama/Llama-2-13b-chat-hf"
 hf_auth = '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'
 model_config = transformers.AutoConfig.from_pretrained(
     model_id,
@@ -70,7 +70,7 @@ generate_text = transformers.pipeline(
 
 print("===============================================")
 
-long_text = """Transcript
+long_text = """Transcript start :
 Mayank Aggarwal: I hope everybody has done the lunch.
 Lovish Verma: Yeah.
 Mayank Mehta: just,
@@ -247,6 +247,20 @@ client level total is The total at the project level as well and at the task lev
 the external level, it gets populated automatically And you can calculate it as well from manual.
 """
 
-print(len(long_text[:1000]))
-res = generate_text(f"Please give me summary of the following transcript: {long_text[:1000]}")
+print(len(long_text[:7000]))
+print(long_text[:7000])
+print("======================================")
+print("Response")
+print(len(text))
+#pre_prompt = "Your are a helpful assistant. You do not repsond as 'User' or pretend to be 'User'. You only respond as 'Assistant'."
+prompt_input = f"what is the summary of given transcript: {text} ?"
+pre_prompt = "You are helpful assistant who gives summary of the transcripts.You do not respond as 'User' or pretend to be 'User'. Do not complete transcripts, just give summary."
+pre_promt = "You are helpful assistant."
+
+ll = long_text[3000:3000]
+print(ll)
+print("============================")
+res = generate_text(f"{pre_prompt} Summary of the given text: {ll} Assistant:" )
+
+#res = generate_text(f"Please give me summary of the following transcript: {long_text[:2264]} Transcript end")
 print(res[0]["generated_text"])
