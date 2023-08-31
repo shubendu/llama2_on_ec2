@@ -59,16 +59,12 @@ sm_doc = sm_loader.load()
 combine_custom_prompt='''
 Generate a summary of the following text that includes the following elements:
 
-* A title that accurately reflects the content of the text.
-* An introduction paragraph that provides an overview of the topic.
 * Bullet points that list the key points of the text.
-* A conclusion paragraph that summarizes the main points of the text.
-
 Text:`{text}`
 '''
 
 map_custom_prompt='''
-Summarize the following text in a clear and concise way:
+Summarize the following text in bullet points that list the key points of the text:
 TEXT:`{text}`
 Brief Summary:
 '''
@@ -84,7 +80,7 @@ map_prompt_template = PromptTemplate (
 chain = load_summarize_chain(llm = llm,
                             chain_type="map_reduce",
                             map_prompt=map_prompt_template,
-                            combine_prompt=combine_prompt_template,
+                            #combine_prompt=combine_prompt_template,
                             verbose=True)
 
 
