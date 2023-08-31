@@ -10,7 +10,7 @@ print("Printing Device...")
 print(device)
 
 print("loading model....")
-model_id ="meta-llama/Llama-2-13b-chat-hf"
+model_id ="meta-llama/Llama-2-7b-chat-hf"
 hf_auth = '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'
 model_config = transformers.AutoConfig.from_pretrained(
     model_id,
@@ -67,6 +67,8 @@ generate_text = transformers.pipeline(
     max_new_tokens=4096,  
     repetition_penalty=1.1 
 )
+
+print("loaded modelo")
 
 print("===============================================")
 
@@ -226,7 +228,7 @@ from langchain.llms import HuggingFacePipeline
 llm = HuggingFacePipeline(pipeline=generate_text)
 
 
-sm_loader = UnstructuredFileLoader("cp_reporttxt")
+sm_loader = UnstructuredFileLoader("cp_report.txt")
 sm_doc = sm_loader.load()
 
 lg_loader = UnstructuredFileLoader("worked.txt")
@@ -242,32 +244,40 @@ def doc_summary(docs):
     print (f'Preview: \n{docs[0].page_content.split(". ")[0]}')
     
     
+
+print("Printing small doc .........")
 doc_summary(sm_doc)
 
+print("Printing large doc ......")
 doc_summary(lg_doc)
 
 
 
 #1 summerize stuff
-chain = load_summarize_chain(llm, chain_type="stuff", verbose=True)
-chain.run(sm_doc)
+#chain = load_summarize_chain(llm, chain_type="stuff", verbose=True)
 
-# chain.run(lg_doc)
+#print("small doc output..............................")
+#chain.run(sm_doc)
+
+#print("large doc outpu................................")
+#chain.run(lg_doc)
 
 #2 map reduce
 
-# chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=True)
-# chain.run(sm_doc)
+chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=True)
+#chain.run(sm_doc)
 
-# from langchain.text_splitter import RecursiveCharacterTextSplitter
-# text_splitter = RecursiveCharacterTextSplitter(
-#     # Set a really small chunk size, just to show.
-#     chunk_size = 400,
-#     chunk_overlap = 0
-# )
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+text_splitter = RecursiveCharacterTextSplitter(
+     # Set a really small chunk size, just to show.
+     chunk_size = 5000,
+     chunk_overlap = 100
+ )
 
-# lg_docs = text_splitter.split_documents(lg_doc)
+sam_docs = text_splitter.split_documents(sm_doc)
+print("Response ............................")
 
+chain.run(sam_docs)
 # chain.run(lg_docs[:5])
 
 # #3.refine
