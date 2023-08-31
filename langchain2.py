@@ -71,7 +71,6 @@ generate_text = transformers.pipeline(
 print("loaded modelo")
 
 print("===============================================")
-
 long_text = """Transcript start :
 Mayank Aggarwal: I hope everybody has done the lunch.
 Lovish Verma: Yeah.
@@ -211,13 +210,7 @@ Sumanshu Sharma: Not here, but thanks man for explaining.
 Mayank Aggarwal: Presentation.
 Sumanshu Sharma: Let us know if any of these suggestions, God put by the decision makers and we can have them in private phase. So let us know. Yeah.
 Mayank Mehta: Yeah. Thanks man.
-Sumanshu Sharma: Thanks.
-Mayank Aggarwal: Thanks guys, have a nice day and Take care.
-Himani Vasudeva: Thank you.
-Mayank Aggarwal: He?
-Meeting ended after 00:29:28 👋
-"""
-
+Sumanshu Sharma: """
 
 
 from langchain.document_loaders import UnstructuredFileLoader
@@ -228,28 +221,9 @@ from langchain.llms import HuggingFacePipeline
 llm = HuggingFacePipeline(pipeline=generate_text)
 
 
-sm_loader = UnstructuredFileLoader("cp_report.txt")
+sm_loader = UnstructuredFileLoader("reltio_script.txt")
 sm_doc = sm_loader.load()
-
-lg_loader = UnstructuredFileLoader("worked.txt")
-lg_doc = lg_loader.load()
-
-def doc_summary(docs):
-    print (f'You have {len(docs)} document(s)')
     
-    num_words = sum([len(doc.page_content.split(' ')) for doc in docs])
-    
-    print (f'You have roughly {num_words} words in your docs')
-    print ()
-    print (f'Preview: \n{docs[0].page_content.split(". ")[0]}')
-    
-    
-
-print("Printing small doc .........")
-doc_summary(sm_doc)
-
-print("Printing large doc ......")
-doc_summary(lg_doc)
 
 
 
@@ -270,8 +244,8 @@ chain = load_summarize_chain(llm, chain_type="map_reduce", verbose=True)
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 text_splitter = RecursiveCharacterTextSplitter(
      # Set a really small chunk size, just to show.
-     chunk_size = 5000,
-     chunk_overlap = 100
+     chunk_size = 6000,
+     chunk_overlap = 400
  )
 
 sam_docs = text_splitter.split_documents(sm_doc)
