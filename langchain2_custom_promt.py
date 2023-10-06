@@ -51,7 +51,7 @@ print("loaded modelo")
 llm = HuggingFacePipeline(pipeline=generate_text)
 
 
-sm_loader = UnstructuredFileLoader("reltio_script.txt")
+sm_loader = UnstructuredFileLoader("bhardwaj.txt")
 sm_doc = sm_loader.load()
 # print(sm_doc)
 
